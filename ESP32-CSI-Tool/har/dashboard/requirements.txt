@@ -1,0 +1,4 @@
+# On top of har/requirements.txt. Installed into csi_env (Python 3.14).
+fastapi>=0.115
+uvicorn>=0.30
+websockets>=12

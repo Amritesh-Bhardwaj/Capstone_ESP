@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Python virtualenvs (csi_env ~325 MB, lstm_env ~2.2 GB -- recreate from requirements.txt)
+csi_env/
+lstm_env/
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Trained models and cached arrays -- regenerate with har/train_*.py
+*.joblib
+*.npz
+
+# Captured CSI (recreate by re-recording; too large and too session-specific to track)
+recordings/
+recordings-synthetic/
+recordings-venue/
