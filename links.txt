@@ -1,0 +1,3 @@
+https://github.com/tommy-sense
+https://github.com/AutoSmartGroup/ESP-Fi-HAR
+https://github.com/NTUMARS/Awesome-WiFi-CSI-Sensing
