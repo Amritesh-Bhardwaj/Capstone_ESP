@@ -10,3 +10,6 @@ recordings-venue/
 # makes the reported number reproducible without the 338 MB of raw captures.
 !models/presence_room1.joblib
 *.npz
+
+# Packed dataset archives -- 54 MB, shared as a release asset or DOI, not tracked
+har/dataset/

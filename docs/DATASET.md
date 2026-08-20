@@ -64,6 +64,49 @@ Location: `ESP32-CSI-Tool/har/recordings/room1/`
 | `three_person` | Split from a capture where a third person entered at t=60 s |
 | `unusable` | Weak-link (−85, −89 dBm) or mixed-label captures, kept for the record |
 
+## Sharing the captures
+
+Raw `.csi.txt` is ASCII — about 470 bytes a frame to carry 128 int8 values.
+`pack_dataset.py` stores the wire values as `int8` and lets zip do the rest:
+
+```bash
+csi_env/bin/python har/pack_dataset.py --room room1 --verify
+```
+
+| | |
+|---|---|
+| Raw captures | **338 MB** |
+| Packed archives | **54 MB** |
+| Ratio | **6.2x, lossless** |
+| Verified | 42/42 archives round-trip; analysis output bit-identical |
+
+**Nothing is lost.** `csi` holds the original int8 pairs exactly as the board
+emitted them, *before* `hypot` reduces them to amplitude — so phase is still
+recoverable, which matters because it is the most promising unexplored
+direction (`DATA.md` §8). Unpack any archive back to text with:
+
+```bash
+csi_env/bin/python har/pack_dataset.py --unpack har/dataset/room1/empty/<file>.npz
+```
+
+### Where to put 54 MB
+
+| Option | Verdict |
+|---|---|
+| **Zenodo** | Best for a capstone. Free, 50 GB, permanent DOI, citable in the report. |
+| **GitHub Release** | 2 GB per file. Attach the tarball to a tagged release; no repo bloat. |
+| **Git LFS** | Works, but GitHub's free tier is 1 GB storage *and* 1 GB/month bandwidth — a few clones exhaust it. Not installed here. |
+| **Committing directly** | Possible at 54 MB but inadvisable — every clone pays for it forever, and CSI is not source. |
+
+The repository tracks the calibration, the session manifest and the model, so
+every reported number reproduces from a 2.7 MB file. The captures only matter
+if someone wants to re-derive features from scratch, which is exactly what a
+release asset or a DOI is for.
+
+```bash
+tar czf room1-csi-dataset.tar.gz -C ESP32-CSI-Tool/har dataset/room1
+```
+
 ## Reproducing the derived artefacts
 
 ```bash
