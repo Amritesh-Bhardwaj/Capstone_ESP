@@ -5,4 +5,8 @@ recordings/
 recordings-synthetic/
 recordings-venue/
 *.joblib
+# ...except the tracked presence model: 2.7 MB, embeds its own provenance
+# (session list, leave-one-session-out score, feature importances) and is what
+# makes the reported number reproducible without the 338 MB of raw captures.
+!models/presence_room1.joblib
 *.npz

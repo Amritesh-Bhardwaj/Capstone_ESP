@@ -37,7 +37,7 @@ from csi_pipeline import (  # noqa: E402
 )
 from features import PresenceDetector, motion_score, window_features  # noqa: E402
 
-DEFAULT_PORT = "/dev/cu.usbserial-57460201261"
+DEFAULT_PORT = "/dev/cu.usbserial-5B530174971"
 
 # Validated palette (see har/README.md).
 BLUE = "#2a78d6"
@@ -73,7 +73,7 @@ def parse_args(argv=None):
     parser.add_argument("--replay", default=None, help="replay a recording instead of serial")
     parser.add_argument("--replay-speed", type=float, default=1.0)
     parser.add_argument("--port", default=DEFAULT_PORT)
-    parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--baud", type=int, default=460800)
     parser.add_argument("--mac", default=None)
     parser.add_argument("--window-length", type=int, default=64)
     parser.add_argument("--history", type=int, default=240, help="motion trace length")
@@ -143,6 +143,34 @@ class FrameSource:
         else:
             span = float(recent[-1][1] - recent[0][1])
         return amplitude, span
+
+    def snapshot_seconds(self, seconds: float, max_frames: int = 4000):
+        """(amplitudes, timestamps) covering the last `seconds` of device time.
+
+        ``snapshot`` and ``snapshot_span`` both take a fixed number of *frames*,
+        so the duration they cover moves with the packet rate -- measured on
+        this hardware, a 400-frame window ranged 4.2 s to 8.2 s as the rate fell
+        from 94 Hz to 56 Hz. Any feature computed over it is then measured over
+        a different span each time, and the live dashboard and the offline
+        analysis stop being comparable. This returns a fixed *duration* so the
+        caller can resample onto a uniform grid, as `load_capture` does.
+        """
+        with self.lock:
+            recent = list(self.frames)[-max_frames:]
+        if len(recent) < 2:
+            return None
+        if recent[0][0].local_timestamp is not None:
+            ticks = np.asarray([f.local_timestamp for f, _ in recent], dtype=np.int64)
+            wraps = np.cumsum(np.concatenate([[0], (np.diff(ticks) < 0).astype(np.int64)]))
+            stamps = (ticks + wraps * (1 << 32)) / 1e6
+        else:
+            stamps = np.asarray([w for _, w in recent], dtype=np.float64)
+        stamps = stamps - stamps[0]
+        keep = stamps >= (stamps[-1] - seconds)
+        if keep.sum() < 8:
+            return None
+        amplitude = np.stack([f.amplitude for f, _ in recent])[keep]
+        return amplitude, stamps[keep] - stamps[keep][0]
 
     def rate(self) -> float:
         """Sample rate from the ESP32's own clock, not wall-clock arrival.

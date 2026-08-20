@@ -345,6 +345,40 @@ def test_pipeline_rejects_empty_input():
     raise AssertionError("expected ValueError for empty frame list")
 
 
+def test_parse_rejects_tokens_above_int8():
+    """A merged log line can run two numbers together into one huge token.
+
+    ``_INT_RE`` only checks that a token is an integer. Values above 32767 made
+    np.fromiter raise OverflowError and killed live_rank.py mid-session; values
+    in 128..32767 were worse, silently accepted into the int16 buffer and
+    corrupting the amplitude with no error at all.
+    """
+    values = list(range(-64, 64))
+    values[7] = 291214                      # the token that crashed live_rank
+    assert parse_line(_row(values)) is None
+
+
+def test_parse_rejects_tokens_that_fit_int16_but_not_int8():
+    """The silent case: large enough to corrupt, small enough not to raise."""
+    values = list(range(-64, 64))
+    values[3] = 500
+    assert parse_line(_row(values)) is None
+
+
+def test_parse_accepts_the_full_int8_range():
+    values = [-128 if i % 2 else 127 for i in range(128)]
+    assert parse_line(_row(values)) is not None
+
+
+def test_out_of_range_rows_are_counted_not_crashing():
+    good = [_row(list(range(-64, 64))) for _ in range(5)]
+    bad = list(good[0].split("["))
+    corrupt = _row([291214] + list(range(-64, 63)))
+    frames, stats = parse_lines(good + [corrupt])
+    assert stats["parsed"] == 5
+    assert stats["rejected"] == 1
+
+
 def _main():
     tests = [(n, o) for n, o in sorted(globals().items())
              if n.startswith("test_") and callable(o)]

@@ -222,6 +222,17 @@ def parse_line(line: str) -> Frame | None:
     if not all(_INT_RE.match(tok) for tok in tokens):
         return None  # ANSI log output bled into the array
 
+    # ESP-IDF packs each subcarrier as a pair of **int8** values, so anything
+    # outside -128..127 is a corrupted row -- typically two numbers run
+    # together when a log line merged into the array. The regex above only
+    # checks that a token *is* an integer, which is not enough: values above
+    # 32767 make np.fromiter raise OverflowError and kill any long-running
+    # tool, while values in 128..32767 are silently accepted into the int16
+    # buffer and corrupt the amplitude without any error at all. The second
+    # case is the dangerous one.
+    if not all(-128 <= int(tok) <= 127 for tok in tokens):
+        return None
+
     if len(header) == len(HEADER_FIELDS):
         try:
             return Frame(
@@ -436,6 +447,67 @@ class PipelineResult:
     windows: np.ndarray        # (n, window_length, 48)
     timestamps: np.ndarray     # (frames,) seconds, from the ESP32 steady clock
     stats: dict = field(default_factory=dict)
+
+
+def resample_uniform(
+    signal: np.ndarray,
+    timestamps: np.ndarray,
+    target_hz: float = 100.0,
+    max_gap_s: float = 0.25,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict]:
+    """Interpolate onto a uniform time grid. Returns (values, grid, valid, stats).
+
+    The ESP32 emits CSI only when a packet arrives, so arrival times are not
+    uniform -- a jitter ratio near 2.0 is normal on this hardware. Every
+    spectral feature (band powers, Doppler centroid and spread) assumes a
+    uniform grid; evaluated on jittered samples the spectrum is smeared and
+    high-frequency content becomes unreliable, which is exactly the band that
+    walking Doppler lives in.
+
+    Gaps longer than ``max_gap_s`` are **not** bridged. Interpolating across a
+    half-second dropout invents smooth motion that never happened, and a
+    counting feature would read that as a person. Grid points inside such a gap
+    are reported ``False`` in ``valid``; the caller decides whether to drop the
+    window. The grid stays uniform either way, because puncturing it would
+    reintroduce the very non-uniformity this function exists to remove.
+    """
+    if signal.ndim != 2:
+        raise ValueError("expected a (frames, subcarriers) array")
+    if len(timestamps) != len(signal):
+        raise ValueError("timestamps and signal must have the same length")
+    if len(signal) < 2:
+        raise ValueError("resampling needs at least two frames")
+    if target_hz <= 0:
+        raise ValueError("target_hz must be positive")
+
+    order = np.argsort(timestamps, kind="stable")
+    timestamps = np.asarray(timestamps, dtype=np.float64)[order]
+    signal = signal[order]
+
+    grid = np.arange(timestamps[0], timestamps[-1], 1.0 / target_hz)
+    if len(grid) < 2:
+        raise ValueError("capture is too short for the requested rate")
+
+    values = np.empty((len(grid), signal.shape[1]), dtype=np.float64)
+    for col in range(signal.shape[1]):
+        values[:, col] = np.interp(grid, timestamps, signal[:, col])
+
+    deltas = np.diff(timestamps)
+    valid = np.ones(len(grid), dtype=bool)
+    gaps = np.flatnonzero(deltas > max_gap_s)
+    for idx in gaps:
+        inside = (grid > timestamps[idx]) & (grid < timestamps[idx + 1])
+        valid &= ~inside
+
+    stats = {
+        "target_hz": float(target_hz),
+        "source_rate_hz": float(1.0 / np.median(deltas)) if len(deltas) else 0.0,
+        "n_gaps": int(len(gaps)),
+        "longest_gap_s": float(deltas.max()) if len(deltas) else 0.0,
+        "gap_fraction": float(1.0 - valid.mean()),
+        "n_samples": int(len(grid)),
+    }
+    return values, grid, valid, stats
 
 
 def _timing_stats(timestamps: np.ndarray) -> dict:

@@ -71,7 +71,7 @@ def parse_args(argv=None):
     parser.add_argument("--replay", default=None, help="replay a recording instead of serial")
     parser.add_argument("--replay-speed", type=float, default=1.0)
     parser.add_argument("--port", default=DEFAULT_PORT, help="serial port")
-    parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--baud", type=int, default=460800)
     parser.add_argument("--mac", default=None)
     parser.add_argument("--window-length", type=int, default=64)
     parser.add_argument("--history", type=int, default=240)

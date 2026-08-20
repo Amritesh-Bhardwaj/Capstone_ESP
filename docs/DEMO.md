@@ -32,7 +32,15 @@ self-test, not a result** — never put its accuracy on a slide.
 
 ---
 
-## Step 0.5 — raise the packet rate (10 min, optional but worth it)
+## Step 0.5 — raise the packet rate (superseded, see note)
+
+> **Superseded 2026-08-20.** This step dates from the 22 Hz firmware. The board
+> now runs at **90-97 Hz** natively and the rate is set by the AP's own
+> basic-rate traffic, not by client load — pinging changed nothing measurable
+> (`RESULTS.md` §9.5g). It also cannot work as written on this network: the Mac
+> associates on 5 GHz channel 153 while the board listens on 2.4 GHz channel 6.
+> Kept for the record; skip it.
+
 
 You are at ~22 Hz because CSI only appears when a packet arrives. More traffic
 on the channel means more CSI. From your Mac, on the same AP:
@@ -203,6 +211,154 @@ head has a +8.19 bias against a bounded ±3.67 logit range, so it returns
 
 ---
 
+## Counting track — Gate 1 (built 2026-08-20, needs your one-person capture)
+
+Separate from the activity demo above. See `CONTEXT.md` §13 for why counting is
+scoped to 0/1/2/3+ and why an empty room alone cannot calibrate it.
+
+### Before you calibrate: fix the placement
+
+Read `CONTEXT.md` §2b. Short version for Room 1: **move the ESP32 to the corner
+diagonally opposite the router (~19 ft), not closer.** Longer link, bigger
+Fresnel zone, more of the floor covered. Costs ~5.5 dB and you have ~10 dB
+spare. Then **tape it down** — moving it invalidates every profile built here.
+
+Sanity check after moving:
+
+```bash
+csi_env/bin/python har/run_pipeline.py --serial --duration 15
+```
+
+Want RSSI above about -75 dBm and the rate still near ~95 Hz. If either
+collapses, come back a few feet.
+
+### Step C0 — check the link, not the traffic
+
+An earlier version of this runbook made a fixed-rate ping mandatory here. **That
+was wrong for this deployment** and is retracted — see `RESULTS.md` §9.5g. The
+CSI stream is fed by the AP's own basic-rate traffic and sits at 90-97 Hz
+regardless of occupancy, and the Mac associates on 5 GHz channel 153, so its
+pings never reached the 2.4 GHz channel 6 the board listens on. The ping was
+neither necessary nor sufficient.
+
+What actually has to be checked is that the room's AP is on channel 6 and
+audible. It is not always:
+
+```bash
+csi_env/bin/python har/run_pipeline.py --serial --duration 15
+```
+
+Want `A8:6E:84:93:EE:60` at **better than -75 dBm** and ~95 Hz. If instead you
+see `EC:0E` at -85 dBm or worse, the room AP has wandered off channel 6 — wait
+and retry rather than capturing. `calibrate_room` now aborts on its own below
+-80 dBm, so a bad session fails loudly instead of producing a quiet, wrong
+profile.
+
+If the board returns nothing at all — no CSI *and* no log lines — it has
+stalled; it does that after roughly 20 minutes. `calibrate_room` resets it
+before each capture.
+
+### Step C1 — calibrate the room (2 minutes)
+
+```bash
+cd ESP32-CSI-Tool
+csi_env/bin/python har/calibrate_room.py --room room1 \
+    --mac A8:6E:84:93:EE:60 \
+    --length-ft 16 --width-ft 10 --link-ft 19 \
+    --note "ESP32 far corner diagonally from router, torso height, taped"
+```
+
+It prompts twice:
+
+1. **Empty room, 60 s.** Leave, shut the door. No pets, no fans.
+2. **One person walking, 60 s.** Exactly one, walking a normal loop covering
+   the floor — not pacing one line, not standing still.
+
+Writes `har/rooms/room1/profile.json`.
+
+An empty-room capture from 2026-08-20 is already saved. To reuse it instead of
+recording phase 1 again:
+
+```bash
+csi_env/bin/python har/calibrate_room.py --room room1 --phase one-person \
+    --mac A8:6E:84:93:EE:60
+```
+
+**Do not reuse the 2026-08-20 baseline for counting.** It was captured on the
+-85 dBm transmitter with a third of its duration missing (`RESULTS.md` §9.3),
+and both phases must come from the same transmitter or the gain measures two
+radio links instead of one person. `build_profile` refuses outright if they
+differ. Recapture both phases in one session with `EE:60` above -75 dBm.
+
+### Step C2 — run the gate
+
+```bash
+csi_env/bin/python har/gate1_check.py --room room1 --mac A8:6E:84:93:EE:60
+```
+
+Prints an AUC per feature against the empty room, **and** a null control
+(empty first half vs its own second half). A feature only counts if it beats
+its own drift by a clear margin.
+
+- **PASSED** → the features respond to occupancy. Recruit 3 helpers and record
+  0/1/2/3 for Gate 2. It does *not* mean counting works: 0-vs-1 is a presence
+  test, and counting lives or dies on 1 vs 2 vs 3.
+- **FAILED** → do not recruit anyone. Move the ESP32 farther out, confirm the
+  walker actually crossed the router-to-ESP32 line, and rerun.
+
+Watch the two band rows at the bottom. If the 25-48 Hz control band separates
+as well as the 11-25 Hz Doppler band, the high-frequency content is a
+resampling artefact and must not be fed to a classifier.
+
+### Step C3 — only after Gate 1 passes
+
+3 helpers, 4 counts (0/1/2/3) x 3 takes x 2 min, one room ~= 25 min of
+recording. Pin `--mac` throughout. No ping is needed — the rate is AP-driven
+(`RESULTS.md` §9.5g) — but check `EE:60` is above -75 dBm before each take, and
+re-check that `rate` is still single-valued if you record during busy hours.
+
+---
+
+## Activity-intensity recording protocol
+
+The only classification this hardware supports is **intensity**, not headcount
+(`DATA.md` §4-5). Recording is guided:
+
+```bash
+cd ESP32-CSI-Tool
+csi_env/bin/python har/record_protocol.py --room room1 --session 1 \
+    --mac A8:6E:84:93:EE:60
+```
+
+Six classes — empty, sitting, standing, slow walk, brisk walk, running — two
+passes, 2 minutes each, about 24 minutes a sitting. It prompts before every
+segment, resets the board (it stalls after ~20 min), and writes a manifest with
+per-segment RSSI.
+
+**Every class is recorded inside every session, in shuffled order.** This is not
+tidiness. Recording one class per session yields a classifier that identifies
+the session: `motion_score` separates two *empty* rooms at AUC 0.986, and a
+model given all features scores 49.1% — chance — leave-one-session-out. Cycling
+the classes balances session effects across labels instead of confounding them.
+
+**Do not move the ESP32 or the router mid-session.** RSSI explains 89% of
+between-session variance at 0.24 level units per dB; 4 dB is the entire
+occupancy signal.
+
+Afterwards, check the session was not confounded:
+
+```bash
+csi_env/bin/python har/record_protocol.py --room room1 --session 1 --check
+```
+
+It flags any segment on a link below −80 dBm and warns if RSSI tracks the class.
+Redo individual segments with `--only walk_fast,running`.
+
+Six or more sessions across different times and days, then train with
+leave-one-session-out only.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -216,3 +372,6 @@ head has a +8.19 bias against a bounded ±3.67 logit range, so it returns
 | Readout flickers | Raise `--calibrate-seconds`, or stand more still. |
 | Activity is always one class | Model learned nothing — check Step 2's honest number. |
 | Everything failed | `--replay` a recording. The display is identical. |
+| Counting: "NO GAIN ANCHOR" | Only the empty phase exists. Run `--phase one-person`. Presence still works; counting refuses by design. |
+| Counting: gate says every feature drifts | The empty capture is picking up something — fan, pet, someone walking past a doorway. Recapture. |
+| Counting: high `gap_fraction` | Long dropouts. Usually the AP left channel 6 or the board stalled — check RSSI and that log lines are still arriving. |

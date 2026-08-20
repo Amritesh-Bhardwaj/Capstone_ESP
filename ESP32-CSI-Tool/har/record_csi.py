@@ -21,14 +21,14 @@ import time
 
 import serial
 
-DEFAULT_PORT = "/dev/cu.usbserial-57460201261"
+DEFAULT_PORT = "/dev/cu.usbserial-5B530174971"
 
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--port", default=DEFAULT_PORT, help="serial device")
-    parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--baud", type=int, default=460800)
     parser.add_argument("--duration", type=float, default=30.0, help="seconds")
     parser.add_argument("--label", required=True, help="activity label, e.g. walking")
     parser.add_argument("--outdir", default=str(pathlib.Path(__file__).parent / "recordings"))

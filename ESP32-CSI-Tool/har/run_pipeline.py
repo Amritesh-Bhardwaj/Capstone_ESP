@@ -25,7 +25,7 @@ from csi_pipeline import (  # noqa: E402
     run_pipeline,
 )
 
-DEFAULT_PORT = "/dev/cu.usbserial-57460201261"
+DEFAULT_PORT = "/dev/cu.usbserial-5B530174971"
 
 # Colours from the data-viz reference palette (validated: all checks pass).
 SERIES_RAW = "#2a78d6"        # categorical slot 1
@@ -47,7 +47,7 @@ def parse_args(argv=None):
     source.add_argument("--serial", action="store_true", help="read live from the ESP32")
 
     parser.add_argument("--port", default=DEFAULT_PORT)
-    parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--baud", type=int, default=460800)
     parser.add_argument("--duration", type=float, default=20.0,
                         help="seconds to capture in --serial mode")
     parser.add_argument("--mac", default=None,

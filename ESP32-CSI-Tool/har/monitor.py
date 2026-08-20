@@ -37,7 +37,7 @@ from csi_pipeline import (  # noqa: E402
 )
 from features import motion_score  # noqa: E402
 
-DEFAULT_PORT = "/dev/cu.usbserial-57460201261"
+DEFAULT_PORT = "/dev/cu.usbserial-5B530174971"
 
 
 def parse_args(argv=None):

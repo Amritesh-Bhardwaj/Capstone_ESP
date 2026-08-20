@@ -11,11 +11,31 @@ venv/
 __pycache__/
 *.py[cod]
 
-# Trained models and cached arrays -- regenerate with har/train_*.py
-*.joblib
+# Cached arrays -- regenerate with har/train_*.py
 *.npz
 
-# Captured CSI (recreate by re-recording; too large and too session-specific to track)
+# Trained models are ignored by default, but the room1 presence model is
+# tracked: it is 2.7 MB, embeds its own provenance (sessions, score, feature
+# importances) and is what makes the reported number reproducible.
+*.joblib
+!ESP32-CSI-Tool/har/models/presence_room1.joblib
+
+# Captured CSI -- 338 MB. Not tracked; docs/DATASET.md records every file with
+# a checksum so the set can be identified and the derived artefacts rebuilt.
 recordings/
 recordings-synthetic/
 recordings-venue/
+ESP32-CSI-Tool/har/rooms/*/*.csi.txt
+
+# Session logs -- regenerated on every run of the dashboard and capture tools
+logs/
+
+# ESP-IDF build output
+ESP32-CSI-Tool/*/build/
+ESP32-CSI-Tool/*/sdkconfig
+ESP32-CSI-Tool/*/sdkconfig.old
+
+# Wi-Fi credentials -- never track
+docs/credentials.txt
+credentials.txt
+*credentials*
