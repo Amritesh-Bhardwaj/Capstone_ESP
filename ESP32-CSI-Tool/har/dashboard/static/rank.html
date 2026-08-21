@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSI occupancy — validated features</title>
+<style>
+  :root{
+    --bg:#08090b; --card:#111318; --card2:#0d0f13; --line:#1e222b;
+    --ink:#e8ecf2; --muted:#8b93a3; --dim:#5c6474;
+    --accent:#5b8cff; --accent-dim:rgba(91,140,255,.22);
+    --ok:#31c48d; --bad:#f05252; --warn:#e3a008;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+       padding:22px;max-width:1180px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:20px 22px;margin-bottom:18px}
+  h1{font-size:19px;margin:0 0 3px}
+  h2{font-size:16px;margin:0 0 3px;font-weight:600}
+  .sub{color:var(--muted);font-size:12.5px;margin:0 0 16px}
+  .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .spacer{flex:1}
+
+  /* status banner */
+  .banner{display:flex;align-items:center;gap:16px}
+  .dot{width:13px;height:13px;border-radius:50%;background:var(--dim);
+       box-shadow:0 0 0 4px rgba(255,255,255,.04)}
+  .dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(49,196,141,.16)}
+  .dot.off{background:var(--dim)}
+  .state{font-size:26px;font-weight:650;letter-spacing:-.4px}
+  .meta{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;
+        font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+  .pill.good{background:rgba(49,196,141,.14);color:var(--ok)}
+  .pill.bad{background:rgba(240,82,82,.14);color:var(--bad)}
+  .pill.warn{background:rgba(227,160,8,.14);color:var(--warn)}
+
+  /* stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+         gap:1px;background:var(--line);border:1px solid var(--line);
+         border-radius:10px;overflow:hidden;margin-top:16px}
+  .tile{background:var(--card2);padding:13px 15px}
+  .tile .k{color:var(--muted);font-size:10.5px;letter-spacing:.7px;
+           text-transform:uppercase;margin-bottom:5px}
+  .tile .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+  .tile .v small{font-size:11.5px;color:var(--muted);font-weight:400}
+
+  canvas{width:100%;display:block;border-radius:8px;background:var(--card2)}
+  .legend{display:flex;gap:18px;justify-content:center;margin-top:10px;
+          color:var(--muted);font-size:11.5px}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;
+          background:var(--accent);vertical-align:-1px;margin-right:6px}
+  .dash{display:inline-block;width:16px;border-top:2px dashed var(--muted);
+        vertical-align:4px;margin-right:6px}
+
+  /* feature table */
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th{text-align:left;color:var(--muted);font-size:10.5px;letter-spacing:.7px;
+     text-transform:uppercase;font-weight:600;padding:0 10px 9px 0;
+     border-bottom:1px solid var(--line)}
+  td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);font-size:13px}
+  tr:last-child td{border-bottom:none}
+  .num{font-weight:600}
+  .band{color:var(--dim);font-size:11.5px}
+  .out{color:var(--accent)}
+  .why{color:var(--muted);font-size:12.5px;margin-top:14px;line-height:1.65}
+  .why b{color:var(--ink);font-weight:600}
+  code{background:#181c24;padding:1px 5px;border-radius:4px;font-size:12px;
+       color:#c3cbdb}
+  .banner-note{background:rgba(240,82,82,.07);border:1px solid rgba(240,82,82,.25);
+       border-radius:9px;padding:11px 14px;color:#f8b4b4;font-size:12.5px;margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="banner">
+    <span class="dot off" id="dot"></span>
+    <div>
+      <div class="state" id="state">connecting…</div>
+      <div class="meta" id="meta">waiting for the first window</div>
+    </div>
+    <span class="spacer"></span>
+    <div style="text-align:right">
+      <div class="meta" id="link">—</div>
+      <div class="meta" id="logline">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Live Sensing Activity</h2>
+  <p class="sub">Presence level over time. <b>0.0 = the calibrated empty room, 1.0 = one person
+     walking in it</b> — the mean of the three Gate 1 features, mapped through the room profile.
+     The faint line is the raw per-window score; the solid one is the running median the
+     decision actually uses. Separate enter and exit thresholds stop it flapping at the
+     boundary.</p>
+  <p class="sub" id="decidenote" style="margin-top:-8px"></p>
+  <canvas id="area" height="230"></canvas>
+  <div class="legend">
+    <span><span class="swatch"></span>SMOOTHED LEVEL</span>
+    <span><span style="display:inline-block;width:14px;border-top:2px solid rgba(139,147,163,.6);vertical-align:4px;margin-right:6px"></span>RAW (per window)</span>
+    <span><span class="dash" style="border-color:#31c48d"></span>ENTER</span>
+    <span><span class="dash"></span>EXIT</span>
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Presence level</div><div class="v" id="t_level">—</div></div>
+    <div class="tile"><div class="k">Enter / exit</div><div class="v" id="t_thr">—</div></div>
+    <div class="tile"><div class="k">Min · Max</div><div class="v" id="t_minmax">—</div></div>
+    <div class="tile"><div class="k">Average</div><div class="v" id="t_avg">—</div></div>
+    <div class="tile"><div class="k">Present %</div><div class="v" id="t_pct">—</div></div>
+    <div class="tile"><div class="k">Updates</div><div class="v" id="t_upd">—</div></div>
+    <div class="tile"><div class="k">Motion events</div><div class="v" id="t_ev">—</div></div>
+    <div class="tile"><div class="k">Since last motion</div><div class="v" id="t_since">—</div></div>
+    <div class="tile"><div class="k">Event score z</div><div class="v" id="t_z">—</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Features</h2>
+  <p class="sub">Live value against the empty-room band from the calibration (median ± 2 MAD),
+     with the Gate 1 scores that decided whether each one is trustworthy.
+     <span id="g1when"></span></p>
+  <table>
+    <thead><tr>
+      <th>Feature</th><th>Live</th><th>Empty-room band</th>
+      <th>AUC vs occupied</th><th id='nullhdr'>AUC vs 2nd empty room</th><th>Verdict</th>
+    </tr></thead>
+    <tbody id="ftable"></tbody>
+  </table>
+  <div class="why">
+    <b>Why two AUC columns.</b> The first says a feature separates an empty room from an
+    occupied one. The second says it separates an empty room from a <i>different empty
+    session</i> — where the honest answer is 0.5. A feature scoring high in <i>both</i> is
+    detecting the session, not the person.
+    <b>That is exactly what <code>motion_score</code> does</b> (0.998 vs 0.986), and it is
+    what the older presence path is built on. Rank features measure the <i>shape</i> of the
+    subcarrier covariance, which is scale-invariant, so link changes leave them alone.
+  </div>
+  <div class="banner-note" id="warn" style="display:none"></div>
+</div>
+
+<div class="card">
+  <h2>Signal Visualizer</h2>
+  <p class="sub" id="sigsub">Raw amplitude of the centre subcarrier over the whole analysis
+     window, unprocessed. A flat line means the board has stalled — it does that after roughly
+     20 minutes and needs an EN reset.</p>
+  <canvas id="sig" height="240"></canvas>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let CFG = null, HIST = [], RAW = [], CSI = [], CFG_SPAN = 4, CSI_SC = null;
+
+function dpi(c){
+  const r = c.getBoundingClientRect(), s = window.devicePixelRatio || 1;
+  if (c.width !== Math.round(r.width*s) || c.height !== Math.round(r.height*s)){
+    c.width = Math.round(r.width*s); c.height = Math.round(r.height*s);
+  }
+  const g = c.getContext('2d'); g.setTransform(s,0,0,s,0,0);
+  return [g, r.width, r.height];
+}
+
+function drawArea(){
+  const [g,W,H] = dpi($('area'));
+  g.clearRect(0,0,W,H);
+  const pts = HIST.filter(v => v !== null);
+  const en = CFG ? CFG.enter : 0.8, ex = CFG ? CFG.exit : 0.4;
+  const hi = Math.max(1.4, en*1.4, ...(pts.length?pts:[1]));
+  const lo = Math.min(0, ...(pts.length?pts:[0]));
+  const n = CFG ? CFG.history : 180;
+  const x = i => (i/(n-1))*W;
+  const y = v => H - ((v-lo)/Math.max(hi-lo,1e-9))*(H-14) - 7;
+
+  g.strokeStyle = '#1a1e26'; g.lineWidth = 1;
+  for (let k=0;k<=4;k++){ const yy=Math.round((H/4)*k)+.5;
+    g.beginPath(); g.moveTo(0,yy); g.lineTo(W,yy); g.stroke(); }
+
+  if (pts.length > 1){
+    g.beginPath();
+    let started = false;
+    HIST.forEach((v,i) => { if (v===null) return;
+      started ? g.lineTo(x(i),y(v)) : (g.moveTo(x(i),y(v)), started=true); });
+    const last = HIST.map((v,i)=>[v,i]).filter(p=>p[0]!==null).pop();
+    const first = HIST.map((v,i)=>[v,i]).filter(p=>p[0]!==null)[0];
+    g.lineTo(x(last[1]), y(lo)); g.lineTo(x(first[1]), y(lo)); g.closePath();
+    const grad = g.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'rgba(91,140,255,.55)'); grad.addColorStop(1,'rgba(91,140,255,.06)');
+    g.fillStyle = grad; g.fill();
+    g.beginPath(); started=false;
+    HIST.forEach((v,i) => { if (v===null) return;
+      started ? g.lineTo(x(i),y(v)) : (g.moveTo(x(i),y(v)), started=true); });
+    g.strokeStyle='#5b8cff'; g.lineWidth=1.8; g.stroke();
+  }
+  // raw, unsmoothed score behind the smoothed one -- so the noise the
+  // hysteresis is absorbing stays visible rather than being hidden.
+  if (RAW.length > 1){
+    g.beginPath(); let st=false;
+    RAW.forEach((v,i)=>{ if(v===null) return;
+      st ? g.lineTo(x(i),y(v)) : (g.moveTo(x(i),y(v)), st=true); });
+    g.strokeStyle='rgba(139,147,163,.45)'; g.lineWidth=1; g.stroke();
+  }
+  g.save(); g.setLineDash([6,5]); g.lineWidth=1.4;
+  g.strokeStyle='#31c48d'; g.beginPath(); g.moveTo(0,y(en)); g.lineTo(W,y(en)); g.stroke();
+  g.strokeStyle='#8b93a3'; g.beginPath(); g.moveTo(0,y(ex)); g.lineTo(W,y(ex)); g.stroke();
+  g.restore();
+}
+
+function drawSig(){
+  const [g,W,H] = dpi($('sig'));
+  g.clearRect(0,0,W,H);
+  if (CSI.length < 2) return;
+  const PAD = 44, BOT = 20;              // room for the axes
+  const dmin = Math.min(...CSI), dmax = Math.max(...CSI);
+  // Zoomed out: pad the range by 35% each side and never show less than 20
+  // units, so a quiet trace does not fill the panel with magnified noise.
+  const mid = (dmax+dmin)/2, half = Math.max((dmax-dmin)*0.675, 10);
+  const lo = mid-half, hi = mid+half;
+  const x = i => PAD + (i/(CSI.length-1))*(W-PAD-8);
+  const y = v => (H-BOT) - ((v-lo)/(hi-lo))*(H-BOT-10);
+
+  g.strokeStyle='#1a1e26'; g.lineWidth=1;
+  g.fillStyle='#8b93a3'; g.font='10px -apple-system,sans-serif'; g.textAlign='right';
+  for (let k=0;k<=4;k++){
+    const v = lo + (hi-lo)*k/4, yy = Math.round(y(v))+.5;
+    g.beginPath(); g.moveTo(PAD,yy); g.lineTo(W,yy); g.stroke();
+    g.fillText(v.toFixed(0), PAD-7, yy+3);
+  }
+  g.textAlign='center';
+  const span = CFG_SPAN || 4;
+  for (let k=0;k<=4;k++){
+    const xx = PAD + (W-PAD-8)*k/4;
+    g.fillText((-span + span*k/4).toFixed(1)+'s', xx, H-6);
+  }
+  g.textAlign='left';
+  g.fillText('amplitude', 4, 12);
+
+  g.beginPath(); CSI.forEach((v,i)=> i?g.lineTo(x(i),y(v)):g.moveTo(x(i),y(v)));
+  g.strokeStyle='#5b8cff'; g.lineWidth=1.4; g.stroke();
+}
+
+function fmt(v,d=3){ return (v===null||v===undefined||Number.isNaN(v)) ? '—' : v.toFixed(d); }
+
+function renderTable(s){
+  if (!CFG) return;
+  const rows = CFG.tracked.map(name => {
+    const v = s.features ? s.features[name] : null;
+    const band = CFG.bands[name] || [null,null];
+    const g1 = (CFG.gate1 && CFG.gate1[name]) || [null,null];
+    const good = CFG.validated.includes(name);
+    const outside = (v!==null && band[0]!==null) && (v < band[0] || v > band[1]);
+    return `<tr>
+      <td><code>${name}</code></td>
+      <td class="num ${outside?'out':''}">${fmt(v)}</td>
+      <td class="band">${band[0]===null?'—':fmt(band[0])} … ${band[1]===null?'—':fmt(band[1])}</td>
+      <td class="num">${g1[0]===null?'—':g1[0].toFixed(3)}</td>
+      <td class="num">${g1[1]===null?'—':g1[1].toFixed(3)}</td>
+      <td>${good?'<span class="pill good">validated</span>'
+                :'<span class="pill bad">rejected</span>'}</td>
+    </tr>`;
+  });
+  $('ftable').innerHTML = rows.join('');
+}
+
+function apply(s){
+  if (s.status === 'ok' && s.level !== null && s.level !== undefined){
+    $('dot').className = 'dot ' + (s.present ? 'on' : 'off');
+    $('state').textContent = s.present ? 'PERSON PRESENT' : 'ROOM EMPTY';
+  } else if (s.level === null || s.level === undefined){
+    $('dot').className = 'dot off';
+    $('state').textContent = 'no presence level';
+  }
+  $('meta').textContent =
+    `smoothed ${fmt(s.level)}  ·  raw ${fmt(s.raw_level)}  ·  ` +
+    `${s.rate_hz||0} Hz sustained  ·  ${s.frames||0} frames  ·  up ${Math.round(s.uptime||0)}s`;
+  $('link').textContent = `${s.mac||'—'}  ·  ${CFG?CFG.source:''}`;
+  $('logline').textContent = CFG && CFG.log ? 'logging → ' + CFG.log.split('/').pop() : 'not logging';
+
+  HIST = s.history || [];
+  RAW = s.raw_history || [];
+  CSI = s.csi || CSI;
+  if (s.csi_span_s) CFG_SPAN = s.csi_span_s;
+  if (s.csi_sc !== undefined) CSI_SC = s.csi_sc;
+  $('t_level').innerHTML = fmt(s.level);
+  $('t_thr').innerHTML = CFG ? `${CFG.enter.toFixed(2)} <small>/</small> ${CFG.exit.toFixed(2)}` : '—';
+  $('t_minmax').innerHTML = (s.level_min===undefined) ? '—'
+      : `${fmt(s.level_min,2)} <small>·</small> ${fmt(s.level_max,2)}`;
+  $('t_avg').innerHTML = (s.level_avg===undefined) ? '—' : fmt(s.level_avg,2);
+  $('t_pct').innerHTML = (s.above_pct===undefined) ? '—' : s.above_pct.toFixed(1)+'%';
+  $('t_upd').innerHTML = s.updates || 0;
+  const ev = s.event || {};
+  $('t_ev').innerHTML = ev.events !== undefined ? ev.events : '—';
+  $('t_since').innerHTML = ev.since_motion_s !== undefined && ev.since_motion_s !== null
+      ? `${ev.since_motion_s.toFixed(0)}<small>s / ${(ev.timeout_s||0).toFixed(0)}s</small>` : '—';
+  $('t_z').innerHTML = ev.z !== undefined
+      ? `${ev.z.toFixed(2)}<small> / ${(ev.enter_z||3).toFixed(1)}</small>` : '—';
+  if (CSI_SC !== null) $('sigsub').innerHTML =
+    `Raw amplitude of subcarrier <b>#${CSI_SC}</b> over the last <b>${CFG_SPAN}s</b>, unprocessed
+     (${CSI.length} points). A flat line means the board has stalled — it does that after
+     roughly 20 minutes and needs an EN reset.`;
+  renderTable(s);
+  drawArea(); drawSig();
+}
+
+const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+const ws = new WebSocket(`${proto}://${location.host}/ws`);
+ws.onmessage = ev => {
+  const m = JSON.parse(ev.data);
+  if (m.type === 'config'){
+    CFG = m;
+    if (m.decide === 'events'){
+      $('decidenote').innerHTML = `<b>Deciding on motion events</b>, not on the level: a short
+        window against a long one, so anything slower than ${'' + (m.timeout_s/60).toFixed(0)} min
+        cancels. The room's own multipath wanders 1.35 level units over five hours with nobody
+        moving, so an absolute threshold cannot work — it scored below chance. Occupied is held
+        for <b>${m.timeout_s}s</b> after the last motion above z=${m.enter_z}.`;
+    } else {
+      $('decidenote').innerHTML = `<b>Deciding on the absolute level.</b> Kept for comparison
+        only — this scored <b>below chance</b> (42.4% balanced, 76.3% false positives) on the
+        labelled session.`;
+    }
+    if (m.gate1_measured){
+      $('g1when').textContent = 'Measured ' + m.gate1_measured + ', read from the room profile'
+        + (m.null_is_cross_session ? ' (null from ' + m.null_source + ').'
+                                   : '. Null is within-session only — rerun with --null-empty.');
+      if (!m.null_is_cross_session) $('nullhdr').textContent = 'Null (within session)';
+    } else {
+      $('g1when').textContent = 'Gate 1 has not been run against this room yet.';
+    }
+    if (!m.has_gain_anchor){
+      $('warn').style.display = 'block';
+      $('warn').innerHTML = 'This room profile has <b>no one-person anchor</b>, so there is ' +
+        'no scale for the presence level and none is shown. Record it with ' +
+        '<code>calibrate_room.py --phase one-person</code>.';
+    }
+  } else if (m.type === 'state'){ apply(m); }
+};
+ws.onclose = () => { $('state').textContent = 'disconnected'; $('dot').className='dot off'; };
+window.addEventListener('resize', () => { drawArea(); drawSig(); });
+</script>
+</body>
+</html>

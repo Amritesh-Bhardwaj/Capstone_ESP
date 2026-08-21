@@ -1,0 +1,705 @@
+{
+  "room": "room1",
+  "captures": [
+    {
+      "source": "2026-08-20T02-21_EMPTY.csi.txt",
+      "archive": "2026-08-20T02-21_EMPTY.csi.npz",
+      "frames": 32773,
+      "rejected": 96,
+      "source_bytes": 15584949,
+      "archive_bytes": 2670412,
+      "sha256_source": "e7cc1c666e610fc8",
+      "transmitters": {
+        "74:FE:CE:C9:7A:18": 3196,
+        "A8:6E:84:9-42 12 -26 7 -30 13 -26 9 -27 19 -22 10 -38 16 -19 17 -23 9 -21 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 29 -24 32 -25 34 -25 32 -28 48 -37 48 -31 26 -29 37 -34 50 -29 62 -36 50 -29 49 -32 48 -23 54 -38 39 -29 56 -56 47 -44 46 -55 60 -42 44 -48 39 -53 53:E4:8A": 1,
+        "A8:6E:84:919 10 -12 6 -11 17 -8 11 -6 11 -5 7 -6 8 -14 9 -13 1 -14 4 -5 10 -9 3 -7 4 -11 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 4 4 13 -3 12 -2 18 7 15 1 15 1 17 -14 17 3 19 -12 15 -9 23 -14 21 -12 29 -19 24 -18 14 -15 26 -21 23 -10 24 -15 19 -19 23 -13 13 3:EC:0E": 1,
+        "A8:6E:84:93:E4:8A": 17935,
+        "A8:6E:84:93:EC:0E": 6417,
+        "A8:6E:84:93:EE:60": 5220,
+        "DE:03:F5:69:BF:A8": 3
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T02-27_EMPTY.csi.txt",
+      "archive": "2026-08-20T02-27_EMPTY.csi.npz",
+      "frames": 58689,
+      "rejected": 178,
+      "source_bytes": 27449927,
+      "archive_bytes": 4383003,
+      "sha256_source": "d607047790599ab4",
+      "transmitters": {
+        "74:FE:CE:C9:7A:18": 6769,
+        "A8:6E:84:93:EC:0E": 16291,
+        "A8:6E:84:93:EE:60": 35628,
+        "DE:03:F5:69:BF:A8": 1
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T04-59_EMPTY.csi.txt",
+      "archive": "2026-08-20T04-59_EMPTY.csi.npz",
+      "frames": 20154,
+      "rejected": 60,
+      "source_bytes": 9565937,
+      "archive_bytes": 1356916,
+      "sha256_source": "e6f70095a39518a5",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 2,
+        "A8:6E:84:93:EE:60": 20152
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T13-47-44_EMPTY-lunch-00.csi.txt",
+      "archive": "2026-08-20T13-47-44_EMPTY-lunch-00.csi.npz",
+      "frames": 20502,
+      "rejected": 14,
+      "source_bytes": 9427406,
+      "archive_bytes": 1500908,
+      "sha256_source": "462e28b848c24cac",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 3308,
+        "A8:6E:84:93:EE:60": 11316,
+        "A8:6E:84:93:F8:5C": 5757,
+        "D6:68:70:F9:6C:93": 1,
+        "D6:8A:2B:45:AB:DC": 120
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T13-52-44_EMPTY-lunch-01.csi.txt",
+      "archive": "2026-08-20T13-52-44_EMPTY-lunch-01.csi.npz",
+      "frames": 20067,
+      "rejected": 30,
+      "source_bytes": 9214823,
+      "archive_bytes": 1649261,
+      "sha256_source": "651cd25e1adda86a",
+      "transmitters": {
+        "8A:17:A5:45:82:56": 134,
+        "A8:6E:84:93:EC:0E": 5054,
+        "A8:6E:84:93:F8:5C": 14879
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T13-57-44_EMPTY-lunch-02.csi.txt",
+      "archive": "2026-08-20T13-57-44_EMPTY-lunch-02.csi.npz",
+      "frames": 20669,
+      "rejected": 37,
+      "source_bytes": 9548312,
+      "archive_bytes": 1709883,
+      "sha256_source": "5fe3d0cc76e9865b",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 4516,
+        "A8:6E:84:93:F8:5C": 16153
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-02-44_EMPTY-lunch-03.csi.txt",
+      "archive": "2026-08-20T14-02-44_EMPTY-lunch-03.csi.npz",
+      "frames": 19596,
+      "rejected": 16,
+      "source_bytes": 8999662,
+      "archive_bytes": 1537755,
+      "sha256_source": "6d315680d820f80a",
+      "transmitters": {
+        "A8:6E:84:93:E4:8A": 3979,
+        "A8:6E:84:93:EC:0E": 11953,
+        "A8:6E:84:93:EE:60": 3616,
+        "A8:6E:84:93:F8:5C": 43,
+        "CC:47:40:38:45:6B": 5
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-07-44_EMPTY-lunch-04.csi.txt",
+      "archive": "2026-08-20T14-07-44_EMPTY-lunch-04.csi.npz",
+      "frames": 11801,
+      "rejected": 17,
+      "source_bytes": 5488058,
+      "archive_bytes": 858327,
+      "sha256_source": "722df97a6c289ac8",
+      "transmitters": {
+        "0E:AD:B1:5E:F5:C0": 1,
+        "A8:6E:84:93:E4:8A": 348,
+        "A8:6E:84:93:EC:0E": 1395,
+        "A8:6E:84:93:EE:60": 8351,
+        "A8:6E:84:93:F8:5C": 1706
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-12-44_EMPTY-lunch-05.csi.txt",
+      "archive": "2026-08-20T14-12-44_EMPTY-lunch-05.csi.npz",
+      "frames": 16121,
+      "rejected": 14,
+      "source_bytes": 7474638,
+      "archive_bytes": 1275268,
+      "sha256_source": "58ff3a5115f2ad20",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 1,
+        "A8:6E:84:93:E4:8A": 5347,
+        "A8:6E:84:93:EC:0E": 5591,
+        "A8:6E:84:93:EE:60": 2889,
+        "A8:6E:84:93:F8:5C": 2280,
+        "CC:47:40:38:45:6B": 13
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-17-44_EMPTY-lunch-06.csi.txt",
+      "archive": "2026-08-20T14-17-44_EMPTY-lunch-06.csi.npz",
+      "frames": 13953,
+      "rejected": 3,
+      "source_bytes": 6227341,
+      "archive_bytes": 1095901,
+      "sha256_source": "9901c30777bb3226",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 3,
+        "A8:6E:84:93:EC:0E": 13950
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-22-44_EMPTY-lunch-07.csi.txt",
+      "archive": "2026-08-20T14-22-44_EMPTY-lunch-07.csi.npz",
+      "frames": 16064,
+      "rejected": 18,
+      "source_bytes": 7503508,
+      "archive_bytes": 1296233,
+      "sha256_source": "9d852fb4565ff5cd",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 13,
+        "A8:6E:84:93:E4:8A": 8982,
+        "A8:6E:84:93:EC:00": 2,
+        "A8:6E:84:93:EC:0E": 7066,
+        "BA:03:5E:F7:64:06": 1
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T14-27-44_EMPTY-lunch-08.csi.txt",
+      "archive": "2026-08-20T14-27-44_EMPTY-lunch-08.csi.npz",
+      "frames": 7710,
+      "rejected": 0,
+      "source_bytes": 3430553,
+      "archive_bytes": 604962,
+      "sha256_source": "8060ff1219b74d23",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 371,
+        "A8:6E:84:93:EC:00": 1,
+        "A8:6E:84:93:EC:0E": 7338
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-17-30_EMPTY-00.csi.txt",
+      "archive": "2026-08-20T17-17-30_EMPTY-00.csi.npz",
+      "frames": 14222,
+      "rejected": 16,
+      "source_bytes": 6620752,
+      "archive_bytes": 1000759,
+      "sha256_source": "5730b17a19c9ee8a",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 1185,
+        "8A:17:A5:45:82:56": 5,
+        "A8:6E:84:93:EC:0E": 1228,
+        "A8:6E:84:93:EE:60": 11804
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-21-30_EMPTY-01.csi.txt",
+      "archive": "2026-08-20T17-21-30_EMPTY-01.csi.npz",
+      "frames": 19369,
+      "rejected": 33,
+      "source_bytes": 9110366,
+      "archive_bytes": 1298613,
+      "sha256_source": "cd88108233f7596e",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 579,
+        "92:6E:75:BF:98:76": 1,
+        "A8:6E:84:93:EC:0E": 16,
+        "A8:6E:84:93:EE:60": 18773
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-25-30_EMPTY-02.csi.txt",
+      "archive": "2026-08-20T17-25-30_EMPTY-02.csi.npz",
+      "frames": 14353,
+      "rejected": 25,
+      "source_bytes": 6700187,
+      "archive_bytes": 976513,
+      "sha256_source": "a04851c249e22045",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 1827,
+        "A8:6E:84:93:EC:0E": 38,
+        "A8:6E:84:93:EE:60": 12488
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-29-30_EMPTY-03.csi.txt",
+      "archive": "2026-08-20T17-29-30_EMPTY-03.csi.npz",
+      "frames": 5804,
+      "rejected": 3,
+      "source_bytes": 2550606,
+      "archive_bytes": 441865,
+      "sha256_source": "976fcb67d15aa589",
+      "transmitters": {
+        "1A:F1:02:FE:15:6C": 35,
+        "74:FE:CE:C9:74:2A": 5655,
+        "A8:6E:84:93:EC:0E": 114
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-33-30_EMPTY-04.csi.txt",
+      "archive": "2026-08-20T17-33-30_EMPTY-04.csi.npz",
+      "frames": 17224,
+      "rejected": 11,
+      "source_bytes": 8135775,
+      "archive_bytes": 1202790,
+      "sha256_source": "f82c35c0b8863972",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 5,
+        "74:FE:CE:C9:74:2A": 230,
+        "A8:6E:84:93:EC:0E": 6,
+        "A8:6E:84:93:EE:60": 16691,
+        "D6:8A:2B:45:AB:DC": 292
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-37-30_EMPTY-05.csi.txt",
+      "archive": "2026-08-20T17-37-30_EMPTY-05.csi.npz",
+      "frames": 19376,
+      "rejected": 23,
+      "source_bytes": 9073894,
+      "archive_bytes": 1428961,
+      "sha256_source": "27483b72d4af77f9",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 1,
+        "A8:6E:84:93:EC:0E": 2,
+        "A8:6E:84:93:EE:60": 15398,
+        "A8:6E:84:93:F8:5C": 3784,
+        "D6:8A:2B:45:AB:DC": 191
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-41-30_EMPTY-06.csi.txt",
+      "archive": "2026-08-20T17-41-30_EMPTY-06.csi.npz",
+      "frames": 19546,
+      "rejected": 36,
+      "source_bytes": 9106650,
+      "archive_bytes": 1457011,
+      "sha256_source": "74fbd260b5864212",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 2,
+        "74:FE:CE:C9:74:2A": 150,
+        "A8:6E:84:93:EE:60": 13510,
+        "A8:6E:84:93:F8:5C": 5605,
+        "D6:8A:2B:45:AB:DC": 279
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T17-45-30_EMPTY-07.csi.txt",
+      "archive": "2026-08-20T17-45-30_EMPTY-07.csi.npz",
+      "frames": 11543,
+      "rejected": 4,
+      "source_bytes": 5430579,
+      "archive_bytes": 818636,
+      "sha256_source": "0b97d915591c8d65",
+      "transmitters": {
+        "74:FE:CE:C9:74:2A": 49,
+        "A8:6E:84:93:EE:60": 11084,
+        "A8:6E:84:93:F8:5C": 180,
+        "D6:8A:2B:45:AB:DC": 230
+      },
+      "folder": "empty"
+    },
+    {
+      "source": "2026-08-20T04-36_ONE-person-walking.csi.txt",
+      "archive": "2026-08-20T04-36_ONE-person-walking.csi.npz",
+      "frames": 5724,
+      "rejected": 3,
+      "source_bytes": 2708644,
+      "archive_bytes": 423383,
+      "sha256_source": "8bf4c3dda0e2695b",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 2,
+        "A8:6E:84:93:EE:08": 94,
+        "A8:6E:84:93:EE:60": 5525,
+        "D6:8A:2B:45:AB:DC": 103
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T04-50_ONE-person-sitting-still.csi.txt",
+      "archive": "2026-08-20T04-50_ONE-person-sitting-still.csi.npz",
+      "frames": 26692,
+      "rejected": 31,
+      "source_bytes": 12633429,
+      "archive_bytes": 1938506,
+      "sha256_source": "4450c14abf2649f4",
+      "transmitters": {
+        "A8:6E:84:93:EE:60": 26692
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T06-32_ONE-person-asleep-inLoS.csi.txt",
+      "archive": "2026-08-20T06-32_ONE-person-asleep-inLoS.csi.npz",
+      "frames": 5844,
+      "rejected": 11,
+      "source_bytes": 2751291,
+      "archive_bytes": 453323,
+      "sha256_source": "465c3a5c0ce56636",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 1879,
+        "A8:6E:84:93:EE:60": 3909,
+        "D6:8A:2B:45:AB:DC": 56
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T11-34_ONE-person-asleep-inLoS.csi.txt",
+      "archive": "2026-08-20T11-34_ONE-person-asleep-inLoS.csi.npz",
+      "frames": 5603,
+      "rejected": 10,
+      "source_bytes": 2631485,
+      "archive_bytes": 441756,
+      "sha256_source": "23c3ffdce77755c7",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 2166,
+        "A8:6E:84:93:EE:60": 3425,
+        "D6:8A:2B:45:AB:DC": 12
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-08-59_ASLEEP-off-LoS-00.csi.txt",
+      "archive": "2026-08-20T18-08-59_ASLEEP-off-LoS-00.csi.npz",
+      "frames": 19026,
+      "rejected": 40,
+      "source_bytes": 9107821,
+      "archive_bytes": 1588348,
+      "sha256_source": "ef51252f48dbc0e8",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 1,
+        "A8:6E:84:93:DD:78": 20,
+        "A8:6E:84:93:EC:00": 1,
+        "A8:6E:84:93:EC:0E": 369,
+        "A8:6E:84:93:EE:60": 9725,
+        "A8:6E:84:93:F8:5C": 8778,
+        "D6:8A:2B:45:AB:DC": 132
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-15-59_ASLEEP-off-LoS-01.csi.txt",
+      "archive": "2026-08-20T18-15-59_ASLEEP-off-LoS-01.csi.npz",
+      "frames": 18955,
+      "rejected": 18,
+      "source_bytes": 8984467,
+      "archive_bytes": 1421626,
+      "sha256_source": "893f4dc70b918f37",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 1,
+        "74:FE:CE:C9:74:2A": 7,
+        "A8:6E:84:93:DD:78": 89,
+        "A8:6E:84:93:EC:00": 3,
+        "A8:6E:84:93:EC:0E": 1184,
+        "A8:6E:84:93:EE:60": 17334,
+        "A8:7E:EA:41:B0:04": 6,
+        "D6:8A:2B:45:AB:DC": 331
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-22-59_ASLEEP-off-LoS-02.csi.txt",
+      "archive": "2026-08-20T18-22-59_ASLEEP-off-LoS-02.csi.npz",
+      "frames": 19276,
+      "rejected": 29,
+      "source_bytes": 9090061,
+      "archive_bytes": 1476561,
+      "sha256_source": "f590d98f9ec542e8",
+      "transmitters": {
+        "4E:3D:26:2A:3E:3A": 43,
+        "66:8B:A5:12:CC:44": 2,
+        "74:FE:CE:C9:74:2A": 2,
+        "74:FE:CE:C9:74:2E": 584,
+        "A8:6E:84:93:EC:0E": 3383,
+        "A8:6E:84:93:EE:60": 14946,
+        "D6:8A:2B:45:AB:DC": 316
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-29-59_ASLEEP-off-LoS-03.csi.txt",
+      "archive": "2026-08-20T18-29-59_ASLEEP-off-LoS-03.csi.npz",
+      "frames": 19374,
+      "rejected": 32,
+      "source_bytes": 9104906,
+      "archive_bytes": 1456168,
+      "sha256_source": "87f5bfb28a9d378f",
+      "transmitters": {
+        "4E:3D:26:2A:3E:3A": 1,
+        "66:8B:A5:12:CC:44": 2,
+        "A8:6E:84:93:EC:0E": 3172,
+        "A8:6E:84:93:EE:60": 15601,
+        "D6:8A:2B:45:AB:DC": 598
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-36-59_ASLEEP-off-LoS-04.csi.txt",
+      "archive": "2026-08-20T18-36-59_ASLEEP-off-LoS-04.csi.npz",
+      "frames": 19347,
+      "rejected": 35,
+      "source_bytes": 9102880,
+      "archive_bytes": 1442716,
+      "sha256_source": "06ade95f638e4dd6",
+      "transmitters": {
+        "4E:3D:26:2A:3E:3A": 3,
+        "66:8B:A5:12:CC:44": 3,
+        "A8:6E:84:93:EC:0E": 3766,
+        "A8:6E:84:93:EE:60": 15068,
+        "D6:8A:2B:45:AB:DC": 507
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-43-59_ASLEEP-off-LoS-05.csi.txt",
+      "archive": "2026-08-20T18-43-59_ASLEEP-off-LoS-05.csi.npz",
+      "frames": 19234,
+      "rejected": 37,
+      "source_bytes": 9099672,
+      "archive_bytes": 1424173,
+      "sha256_source": "798c82d8a9114e46",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 3,
+        "74:FE:CE:C9:74:2A": 4,
+        "A8:6E:84:93:DD:78": 452,
+        "A8:6E:84:93:EC:0E": 1494,
+        "A8:6E:84:93:EE:60": 16776,
+        "D6:8A:2B:45:AB:DC": 505
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-50-59_ASLEEP-off-LoS-06.csi.txt",
+      "archive": "2026-08-20T18-50-59_ASLEEP-off-LoS-06.csi.npz",
+      "frames": 19278,
+      "rejected": 35,
+      "source_bytes": 9108950,
+      "archive_bytes": 1414759,
+      "sha256_source": "ad198eae45abc99a",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 1,
+        "A8:6E:84:93:EC:0E": 1808,
+        "A8:6E:84:93:EE:60": 16971,
+        "D6:8A:2B:45:AB:DC": 498
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T18-57-59_ASLEEP-off-LoS-07.csi.txt",
+      "archive": "2026-08-20T18-57-59_ASLEEP-off-LoS-07.csi.npz",
+      "frames": 19277,
+      "rejected": 39,
+      "source_bytes": 9094100,
+      "archive_bytes": 1450581,
+      "sha256_source": "b22e6b92fd032ba7",
+      "transmitters": {
+        "22:A0:29:63:71:70": 1,
+        "66:8B:A5:12:CC:44": 2,
+        "A8:6E:84:93:DD:78": 329,
+        "A8:6E:84:93:EC:00": 22,
+        "A8:6E:84:93:EC:0E": 3084,
+        "A8:6E:84:93:EE:60": 15644,
+        "D6:8A:2B:45:AB:DC": 195
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T19-04-59_ASLEEP-off-LoS-08.csi.txt",
+      "archive": "2026-08-20T19-04-59_ASLEEP-off-LoS-08.csi.npz",
+      "frames": 19392,
+      "rejected": 20,
+      "source_bytes": 9088896,
+      "archive_bytes": 1404701,
+      "sha256_source": "7315dea2cd74b46d",
+      "transmitters": {
+        "66:8B:A5:12:CC:44": 2,
+        "A6:3C:99:1B:70:7A": 4,
+        "A8:6E:84:93:DD:78": 205,
+        "A8:6E:84:93:EC:00": 16,
+        "A8:6E:84:93:EC:0E": 1777,
+        "A8:6E:84:93:EE:60": 17219,
+        "D6:8A:2B:45:AB:DC": 169
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T19-11-59_ASLEEP-off-LoS-09.csi.txt",
+      "archive": "2026-08-20T19-11-59_ASLEEP-off-LoS-09.csi.npz",
+      "frames": 19289,
+      "rejected": 33,
+      "source_bytes": 9095639,
+      "archive_bytes": 1447600,
+      "sha256_source": "01f8672af706e89e",
+      "transmitters": {
+        "22:A0:29:63:71:70": 1,
+        "74:FE:CE:C9:74:2A": 24,
+        "A8:6E:84:93:DD:78": 66,
+        "A8:6E:84:93:EC:00": 42,
+        "A8:6E:84:93:EC:0E": 2585,
+        "A8:6E:84:93:EE:60": 16369,
+        "D6:8A:2B:45:AB:DC": 202
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T20-07-16_ASLEEP-off-LoS-11.csi.txt",
+      "archive": "2026-08-20T20-07-16_ASLEEP-off-LoS-11.csi.npz",
+      "frames": 19244,
+      "rejected": 25,
+      "source_bytes": 9060051,
+      "archive_bytes": 1442795,
+      "sha256_source": "4d17bac7b61392be",
+      "transmitters": {
+        "60:83:E7:1E:FC:1E": 743,
+        "74:FE:CE:C9:74:2A": 22,
+        "74:FE:CE:C9:7A:18": 752,
+        "A8:6E:84:93:E1:96": 62,
+        "A8:6E:84:93:EC:0E": 1384,
+        "A8:6E:84:93:EE:08": 16,
+        "A8:6E:84:93:EE:60": 16048,
+        "D6:8A:2B:45:AB:DC": 217
+      },
+      "folder": "one_person"
+    },
+    {
+      "source": "2026-08-20T20-43-16_THREE-people_one-entered-at-60s.csi.txt",
+      "archive": "2026-08-20T20-43-16_THREE-people_one-entered-at-60s.csi.npz",
+      "frames": 6398,
+      "rejected": 0,
+      "source_bytes": 3009858,
+      "archive_bytes": 491529,
+      "sha256_source": "f022f57950af646d",
+      "transmitters": {
+        "4E:3D:26:2A:3E:3A": 78,
+        "60:83:E7:1E:FC:1E": 65,
+        "66:8B:A5:12:CC:44": 1,
+        "A8:6E:84:93:EC:0E": 35,
+        "A8:6E:84:93:EE:60": 4686,
+        "A8:6E:84:93:F8:5C": 1451,
+        "D6:8A:2B:45:AB:DC": 82
+      },
+      "folder": "three_person"
+    },
+    {
+      "source": "2026-08-20T13-41-31_TWO-people-standing-LoS-minimal-movement.csi.txt",
+      "archive": "2026-08-20T13-41-31_TWO-people-standing-LoS-minimal-movement.csi.npz",
+      "frames": 17416,
+      "rejected": 25,
+      "source_bytes": 8237138,
+      "archive_bytes": 1180178,
+      "sha256_source": "8bb174a2bb5d60cd",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 19,
+        "A8:6E:84:93:EE:60": 16850,
+        "D6:8A:2B:45:AB:DC": 547
+      },
+      "folder": "two_person"
+    },
+    {
+      "source": "2026-08-20T20-35-46_TWO-people-standing-ACTIVE.csi.txt",
+      "archive": "2026-08-20T20-35-46_TWO-people-standing-ACTIVE.csi.npz",
+      "frames": 17482,
+      "rejected": 32,
+      "source_bytes": 8265541,
+      "archive_bytes": 1388486,
+      "sha256_source": "ecfe63eb5a0b3a07",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 1884,
+        "A8:6E:84:93:EE:60": 11980,
+        "A8:6E:84:93:F8:5C": 3455,
+        "D6:8A:2B:45:AB:DC": 163
+      },
+      "folder": "two_person"
+    },
+    {
+      "source": "2026-08-20T20-42-16_TWO-people-sitting-still_0-60s.csi.txt",
+      "archive": "2026-08-20T20-42-16_TWO-people-sitting-still_0-60s.csi.npz",
+      "frames": 5748,
+      "rejected": 0,
+      "source_bytes": 2711884,
+      "archive_bytes": 436763,
+      "sha256_source": "6df263b476a6b417",
+      "transmitters": {
+        "A8:6E:84:93:EC:0E": 1,
+        "A8:6E:84:93:EE:60": 4563,
+        "A8:6E:84:93:F8:5C": 1109,
+        "D6:8A:2B:45:AB:DC": 75
+      },
+      "folder": "two_person"
+    },
+    {
+      "source": "2026-08-20T01-41-34_one-person-SITTING-STILL_10ft.csi.txt",
+      "archive": "2026-08-20T01-41-34_one-person-SITTING-STILL_10ft.csi.npz",
+      "frames": 24279,
+      "rejected": 78,
+      "source_bytes": 11431878,
+      "archive_bytes": 2039295,
+      "sha256_source": "b3f1823d7238bd78",
+      "transmitters": {
+        "74:FE:CE:C9:7A:18": 8,
+        "A8:6E:84:93:EC:00": 35,
+        "A8:6E:84:93:EC:0E": 24236
+      },
+      "folder": "unusable"
+    },
+    {
+      "source": "2026-08-20T02-04-11_TRUE-empty_16ft_UNUSABLE-89dBm.csi.txt",
+      "archive": "2026-08-20T02-04-11_TRUE-empty_16ft_UNUSABLE-89dBm.csi.npz",
+      "frames": 1897,
+      "rejected": 10,
+      "source_bytes": 848767,
+      "archive_bytes": 148662,
+      "sha256_source": "7a918f696b696c3d",
+      "transmitters": {
+        "74:FE:CE:C9:7A:18": 2,
+        "A8:6E:84:93:EC:0E": 1895
+      },
+      "folder": "unusable"
+    },
+    {
+      "source": "2026-08-20T20-42-16_TWO-people-SITTING-STILL.csi_MIXED-LABEL-superseded.csi.txt",
+      "archive": "2026-08-20T20-42-16_TWO-people-SITTING-STILL.csi_MIXED-LABEL-superseded.csi.npz",
+      "frames": 12146,
+      "rejected": 20,
+      "source_bytes": 5742853,
+      "archive_bytes": 926149,
+      "sha256_source": "dcfae825540e2df1",
+      "transmitters": {
+        "4E:3D:26:2A:3E:3A": 78,
+        "60:83:E7:1E:FC:1E": 65,
+        "66:8B:A5:12:CC:44": 1,
+        "A8:6E:84:93:EC:0E": 36,
+        "A8:6E:84:93:EE:60": 9249,
+        "A8:6E:84:93:F8:5C": 2560,
+        "D6:8A:2B:45:AB:DC": 157
+      },
+      "folder": "unusable"
+    }
+  ],
+  "source_bytes": 337554134,
+  "archive_bytes": 54402035
+}

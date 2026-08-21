@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WiFi CSI — Human Presence &amp; Activity</title>
+<style>
+  /* Same palette as har/live_demo.py, so the browser and the matplotlib
+     window are the same demo shown twice. */
+  :root {
+    --blue: #2a78d6;
+    --orange: #eb6834;
+    --ink: #0b0b0b;
+    --muted: #52514e;
+    --grid: #dedcd5;
+    --surface: #fcfcfb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 32px 40px;
+    background: var(--surface); color: var(--ink);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  #status { font-size: 44px; font-weight: 700; letter-spacing: -0.01em; color: var(--muted); }
+  #status.present { color: var(--orange); }
+  #activity { font-size: 20px; margin-top: 4px; min-height: 28px; }
+  #meta { color: var(--muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+  #meta b { font-weight: 600; color: var(--ink); }
+  .panel { margin-top: 26px; }
+  .panel h2 {
+    font-size: 13px; font-weight: 600; margin: 0 0 8px; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .legend { font-size: 11px; font-weight: 400; color: var(--muted); }
+  .swatch { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin: 0 5px 0 12px; }
+  /* The height must be pinned in CSS: a canvas carries an intrinsic aspect
+     ratio from its width/height attributes, so width:100% alone stretches it
+     to ~940px before the first draw. */
+  canvas { width: 100%; height: 220px; display: block; background: var(--surface); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .bar { display: grid; grid-template-columns: 110px 1fr 48px; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar span { color: var(--muted); font-size: 13px; }
+  .bar .track { background: #eeece6; height: 16px; border-radius: 2px; overflow: hidden; }
+  .bar .fill { background: var(--blue); height: 100%; width: 0; transition: width 120ms linear; }
+  .bar .pct { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); }
+  #nomodel { color: var(--muted); }
+  footer { margin-top: 30px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--grid); padding-top: 12px; }
+  .warn { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div id="status">—</div>
+    <div id="activity"></div>
+  </div>
+  <div id="meta">connecting…</div>
+</header>
+
+<section class="panel">
+  <h2>Motion energy
+    <span class="legend">
+      <i class="swatch" style="background:var(--orange)"></i>presence threshold
+      <i class="swatch" style="background:var(--grid)"></i>empty-room baseline
+    </span>
+  </h2>
+  <canvas id="trace" height="220"></canvas>
+</section>
+
+<div class="grid">
+  <section class="panel">
+    <h2>Activity confidence</h2>
+    <div id="bars"></div>
+    <div id="nomodel" hidden>no classifier loaded (presence only)</div>
+  </section>
+
+  <section class="panel">
+    <h2>Live CSI <span class="legend" id="wfmeta"></span></h2>
+    <canvas id="waterfall" height="220"></canvas>
+  </section>
+</div>
+
+<footer id="foot"></footer>
+
+<script>
+"use strict";
+
+const PALETTE = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"];
+const CSS = getComputedStyle(document.documentElement);
+const BLUE = CSS.getPropertyValue("--blue").trim();
+const ORANGE = CSS.getPropertyValue("--orange").trim();
+const GRID = CSS.getPropertyValue("--grid").trim();
+const MUTED = CSS.getPropertyValue("--muted").trim();
+
+// 256-entry lookup built from the same sequential-blue stops the matplotlib
+// waterfall uses, so both renderings read identically.
+const LUT = (() => {
+  const table = new Uint8Array(256 * 3);
+  for (let i = 0; i < 256; i++) {
+    const t = (i / 255) * (PALETTE.length - 1);
+    const lo = Math.floor(t), hi = Math.min(lo + 1, PALETTE.length - 1), f = t - lo;
+    const a = hexToRgb(PALETTE[lo]), b = hexToRgb(PALETTE[hi]);
+    for (let c = 0; c < 3; c++) table[i * 3 + c] = Math.round(a[c] + (b[c] - a[c]) * f);
+  }
+  return table;
+})();
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+const el = {
+  status: document.getElementById("status"),
+  activity: document.getElementById("activity"),
+  meta: document.getElementById("meta"),
+  bars: document.getElementById("bars"),
+  nomodel: document.getElementById("nomodel"),
+  trace: document.getElementById("trace"),
+  waterfall: document.getElementById("waterfall"),
+  wfmeta: document.getElementById("wfmeta"),
+  foot: document.getElementById("foot"),
+};
+
+let config = null;
+const fills = new Map();
+
+function sizeCanvas(canvas) {
+  const ratio = window.devicePixelRatio || 1;
+  const width = canvas.clientWidth || 600;
+  const height = parseInt(canvas.getAttribute("height"), 10);
+  if (canvas.width !== Math.round(width * ratio)) {
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+  }
+  canvas.style.height = height + "px";
+  return { ctx: canvas.getContext("2d"), w: width, h: height, ratio };
+}
+
+function applyConfig(cfg) {
+  config = cfg;
+  el.bars.innerHTML = "";
+  fills.clear();
+  if (!cfg.labels.length) {
+    el.nomodel.hidden = false;
+  } else {
+    el.nomodel.hidden = true;
+    for (const label of cfg.labels) {
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `<span></span><div class="track"><div class="fill"></div></div><div class="pct">0%</div>`;
+      row.firstChild.textContent = label;
+      el.bars.appendChild(row);
+      fills.set(label, { fill: row.querySelector(".fill"), pct: row.querySelector(".pct") });
+    }
+  }
+  el.wfmeta.textContent = `${cfg.bins} data subcarriers × ${cfg.window_length} frames`;
+  el.foot.textContent =
+    `source: ${cfg.source} · model: ${cfg.model || "none"}${cfg.kind ? " (" + cfg.kind + ")" : ""}` +
+    ` · presence: enter > ${cfg.enter_threshold.toFixed(4)}, exit < ${cfg.exit_threshold.toFixed(4)},` +
+    ` baseline ${cfg.baseline.toFixed(4)}`;
+}
+
+function drawTrace(history) {
+  const { ctx, w, h, ratio } = sizeCanvas(el.trace);
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  if (!config) return;
+
+  const seen = history.filter((v) => v !== null);
+  const top = Math.max(
+    seen.length ? Math.max(...seen) * 1.25 : 0,
+    config.enter_threshold * 1.6
+  );
+  const y = (v) => h - (v / top) * (h - 12) - 6;
+
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.6;
+  for (let i = 1; i < 5; i++) {
+    const gy = Math.round(y((top / 5) * i)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+  }
+
+  ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = GRID;
+  ctx.beginPath(); ctx.moveTo(0, y(config.baseline)); ctx.lineTo(w, y(config.baseline)); ctx.stroke();
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = ORANGE;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(0, y(config.enter_threshold)); ctx.lineTo(w, y(config.enter_threshold)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.strokeStyle = BLUE;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  let started = false;
+  history.forEach((value, i) => {
+    if (value === null) { started = false; return; }
+    const px = (i / (history.length - 1)) * w;
+    if (!started) { ctx.moveTo(px, y(value)); started = true; } else { ctx.lineTo(px, y(value)); }
+  });
+  ctx.stroke();
+
+  ctx.fillStyle = MUTED;
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.fillText(top.toFixed(3), 4, 12);
+  ctx.fillText("0", 4, h - 4);
+}
+
+function drawWaterfall(wf) {
+  const { ctx, w, h, ratio } = sizeCanvas(el.waterfall);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (!wf) return;
+
+  const raw = atob(wf.data);
+  const image = ctx.createImageData(wf.frames, wf.bins);
+  for (let row = 0; row < wf.bins; row++) {
+    // Row 0 is the lowest subcarrier; matplotlib's origin="lower" puts it at
+    // the bottom, so the image rows are filled bottom-up to match.
+    const src = row * wf.frames;
+    const dst = (wf.bins - 1 - row) * wf.frames;
+    for (let col = 0; col < wf.frames; col++) {
+      const v = raw.charCodeAt(src + col) * 3;
+      const p = (dst + col) * 4;
+      image.data[p] = LUT[v];
+      image.data[p + 1] = LUT[v + 1];
+      image.data[p + 2] = LUT[v + 2];
+      image.data[p + 3] = 255;
+    }
+  }
+  createImageBitmap(image).then((bitmap) => {
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, w * ratio, h * ratio);
+    ctx.drawImage(bitmap, 0, 0, w * ratio, h * ratio);
+  });
+}
+
+function render(state) {
+  if (state.status === "gap") {
+    el.status.textContent = "SIGNAL GAP";
+    el.status.classList.remove("present");
+    el.meta.innerHTML =
+      `<span class="warn">window spans ${state.span}s (expected ~${state.nominal_span}s) — check the board</span>`;
+    return;
+  }
+  if (state.status === "waiting") {
+    el.status.textContent = "…";
+    return;
+  }
+
+  el.status.textContent = state.present ? "PERSON PRESENT" : "NO ONE DETECTED";
+  el.status.classList.toggle("present", state.present);
+
+  if (config && config.labels.length) {
+    el.activity.textContent = state.activity
+      ? `activity: ${state.activity}   (${Math.round(state.activity_confidence * 100)}% confidence)`
+      : "activity: —";
+    config.labels.forEach((label, i) => {
+      const value = state.values[i] || 0;
+      const row = fills.get(label);
+      row.fill.style.width = (value * 100).toFixed(1) + "%";
+      row.pct.textContent = Math.round(value * 100) + "%";
+    });
+  }
+
+  el.meta.innerHTML =
+    `<b>${state.rate_hz.toFixed(0)} Hz</b> · ${state.frames.toLocaleString()} frames · ` +
+    `${state.rejected} malformed · ${state.gaps} gaps<br>${state.mac || ""}`;
+
+  drawTrace(state.history);
+  drawWaterfall(state.waterfall);
+}
+
+let wsAlive = false;
+
+function connect() {
+  const socket = new WebSocket(`ws://${location.host}/ws`);
+  socket.onmessage = (event) => {
+    wsAlive = true;
+    const message = JSON.parse(event.data);
+    if (message.type === "config") applyConfig(message); else render(message);
+  };
+  socket.onclose = () => {
+    wsAlive = false;
+    el.meta.innerHTML = '<span class="warn">disconnected — retrying…</span>';
+    setTimeout(connect, 1000);
+  };
+}
+
+// Polling fallback. Idle while the socket is delivering; it only takes over
+// where WebSockets do not survive the network path (a captive venue proxy, a
+// headless screenshot run). Same JSON, lower rate.
+async function poll() {
+  if (wsAlive) return;
+  try {
+    if (!config) applyConfig(await (await fetch("/api/config")).json());
+    render(await (await fetch("/api/state")).json());
+  } catch (error) {
+    /* server gone; connect()'s retry loop reports it */
+  }
+}
+setInterval(poll, 500);
+
+window.addEventListener("resize", () => { if (config) drawTrace([]); });
+connect();
+</script>
+</body>
+</html>

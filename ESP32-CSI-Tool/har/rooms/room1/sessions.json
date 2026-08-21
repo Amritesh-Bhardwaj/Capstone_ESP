@@ -1,0 +1,146 @@
+[
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T02-21_EMPTY.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T02-27_EMPTY.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T04-59_EMPTY.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T13-47-44_EMPTY-lunch-00.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T13-52-44_EMPTY-lunch-01.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T13-57-44_EMPTY-lunch-02.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-02-44_EMPTY-lunch-03.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-07-44_EMPTY-lunch-04.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-12-44_EMPTY-lunch-05.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-17-44_EMPTY-lunch-06.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-22-44_EMPTY-lunch-07.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T14-27-44_EMPTY-lunch-08.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-17-30_EMPTY-00.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-21-30_EMPTY-01.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-25-30_EMPTY-02.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-29-30_EMPTY-03.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-33-30_EMPTY-04.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-37-30_EMPTY-05.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-41-30_EMPTY-06.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/empty/2026-08-20T17-45-30_EMPTY-07.csi.txt",
+    "label": "empty"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T04-36_ONE-person-walking.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T04-50_ONE-person-sitting-still.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T06-32_ONE-person-asleep-inLoS.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T11-34_ONE-person-asleep-inLoS.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-08-59_ASLEEP-off-LoS-00.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-15-59_ASLEEP-off-LoS-01.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-22-59_ASLEEP-off-LoS-02.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-29-59_ASLEEP-off-LoS-03.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-36-59_ASLEEP-off-LoS-04.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-43-59_ASLEEP-off-LoS-05.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-50-59_ASLEEP-off-LoS-06.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T18-57-59_ASLEEP-off-LoS-07.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T19-04-59_ASLEEP-off-LoS-08.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T19-11-59_ASLEEP-off-LoS-09.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T19-50-35_ASLEEP-off-LoS-10.csi.txt",
+    "label": "present"
+  },
+  {
+    "path": "../../recordings/room1/one_person/2026-08-20T20-07-16_ASLEEP-off-LoS-11.csi.txt",
+    "label": "present"
+  }
+]

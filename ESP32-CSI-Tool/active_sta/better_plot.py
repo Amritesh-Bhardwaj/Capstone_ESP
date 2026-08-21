@@ -5,8 +5,8 @@ import numpy as np
 from collections import deque
 
 # --- CONFIGURATION ---
-SERIAL_PORT = '/dev/cu.usbserial-57460201261' 
-BAUD_RATE = 115200
+SERIAL_PORT = '/dev/cu.usbserial-5B530174971' 
+BAUD_RATE = 460800
 SUBCARRIER_INDEX = 44  
 HISTORY_SIZE = 200     # Increased to see more "history" on screen
 # ---------------------

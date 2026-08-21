@@ -1,0 +1,41 @@
+# macOS
+.DS_Store
+
+# Python virtualenvs (csi_env ~325 MB, lstm_env ~2.2 GB -- recreate from requirements.txt)
+csi_env/
+lstm_env/
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Cached arrays -- regenerate with har/train_*.py
+*.npz
+
+# Trained models are ignored by default, but the room1 presence model is
+# tracked: it is 2.7 MB, embeds its own provenance (sessions, score, feature
+# importances) and is what makes the reported number reproducible.
+*.joblib
+!ESP32-CSI-Tool/har/models/presence_room1.joblib
+
+# Captured CSI -- 338 MB. Not tracked; docs/DATASET.md records every file with
+# a checksum so the set can be identified and the derived artefacts rebuilt.
+recordings/
+recordings-synthetic/
+recordings-venue/
+ESP32-CSI-Tool/har/rooms/*/*.csi.txt
+
+# Session logs -- regenerated on every run of the dashboard and capture tools
+logs/
+
+# ESP-IDF build output
+ESP32-CSI-Tool/*/build/
+ESP32-CSI-Tool/*/sdkconfig
+ESP32-CSI-Tool/*/sdkconfig.old
+
+# Wi-Fi credentials -- never track
+docs/credentials.txt
+credentials.txt
+*credentials*
