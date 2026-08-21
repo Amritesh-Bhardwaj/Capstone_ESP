@@ -1,3 +1,8 @@
+> Reference dump, not project documentation: a saved copy of the
+> [Awesome-WiFi-CSI-Sensing](https://github.com/NTUMARS/Awesome-WiFi-CSI-Sensing)
+> repository list, kept because §7 of `docs/CONTEXT.md` audits it.
+> The project README is [`README.md`](README.md).
+
 
 [![GitHub](https://img.shields.io/github/license/Marsrocky/Awesome-WiFi-CSI-Sensing?color=blue)](https://github.com/Marsrocky/Awesome-WiFi-CSI-Sensing/blob/main/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-green.svg)](https://github.com/Marsrocky/Awesome-WiFi-CSI-Sensing/graphs/commit-activity)
