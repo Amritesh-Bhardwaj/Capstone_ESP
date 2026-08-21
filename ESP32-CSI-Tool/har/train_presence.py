@@ -191,7 +191,7 @@ def main(argv=None) -> int:
                           "windows": len(s["X"]), "rssi": round(s["rssi"], 1)}
                          for s in sessions],
             "leave_one_session_out": {
-                "balanced_accuracy": round(bal, 1) if scores else None,
+                "balanced_accuracy": round(float(bal), 1) if scores else None,
                 "recall_present": round(100 * float(np.mean(pres)), 1) if pres else None,
                 "recall_empty": round(100 * float(np.mean(emp)), 1) if emp else None,
                 "chance": 50.0,
